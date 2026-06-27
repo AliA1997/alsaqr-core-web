@@ -32,6 +32,8 @@ export declare interface AlSaqrConfig {
     hfNsfwChecker?: string;
     hfToken?: string;
     testMode?: boolean;
+    locationApiUrl?: string;
+    locationReverseApiUrl?: string;
 }
 
 export declare type AppType = "default" | "meetup" | "zook";
@@ -47,18 +49,23 @@ export declare class Auth {
     isTestUser(): boolean;
     clearUser(): void;
     clearToken(key?: string): void;
+    setUserIpInfo(value: UserIpInfo, key?: string): void;
+    getUserIpInfo(key?: string): UserIpInfo | null;
 }
 
 export declare class AuthStore {
     processingUserCheck: boolean;
     currentSessionUser: User | undefined;
     auth: Auth | undefined;
+    userIpInfo: UserIpInfo | undefined;
     loadingRegistration: boolean;
     loadingUpsert: boolean;
     currentStepInUserRegistration: number | undefined;
     currentRegistrationForm: UserRegisterForm;
     constructor();
     initializeFromStorage: () => Promise<string | undefined>;
+    setUserIpInfo: (data: UserIpInfo | undefined) => void;
+    loadIpInfo: () => Promise<void>;
     setProcessingUserCheck: (val: boolean) => void;
     setLoadingRegistration: (val: boolean) => void;
     setLoadingUpsert: (val: boolean) => void;
@@ -81,6 +88,35 @@ declare type CheckboxCardProps = {
 } & FieldHookConfig<string>;
 
 export declare const checkNsfwInImage: (client: Client, imageUrl: string) => Promise<any>;
+
+declare const Collapsible: ({ title, defaultOpen, children, className, }: CollapsibleProps) => default_3.JSX.Element;
+export { Collapsible }
+export { Collapsible as CollapsibleDefault }
+
+declare interface CollapsibleProps {
+    title: string;
+    defaultOpen?: boolean;
+    children: default_3.ReactNode;
+    className?: string;
+}
+
+export declare const commonAgent: {
+    userApiClient: {
+        sessionSignin: (oauthData: any) => Promise<any>;
+        sessionCheck: (email: string) => Promise<any>;
+        getUserProfile: (username: string) => Promise<any>;
+        getUsersToAdd: (params: URLSearchParams) => Promise<any>;
+        completeRegistration: (userId: string, values: UserRegisterFormDto) => Promise<any>;
+        followUser: (values: FollowUserFormDto) => Promise<any>;
+        unFollowUser: (values: UnFollowUserFormDto) => Promise<any>;
+        updateUser: (values: UpdateUserFormDto) => Promise<any>;
+        deleteUser: () => Promise<any>;
+    };
+    locationApiClient: {
+        getIpAddress: () => Promise<any>;
+        reverseLocateAddress: (lat: number, long: number) => Promise<any>;
+    };
+};
 
 declare type CommonImageProps = {
     src: string;
@@ -381,7 +417,7 @@ export declare interface ServerError {
     details: string;
 }
 
-export declare const Sidebar: (({ appType, onShowModal }: SidebarProps) => JSX_2.Element) & {
+export declare const Sidebar: (({ appType, onShowModal, routesUserCantAccess, }: SidebarProps) => JSX_2.Element) & {
     displayName: string;
 };
 
@@ -399,8 +435,12 @@ export declare interface SidebarLink {
 
 declare type SidebarProps = {
     appType?: AppType;
-    /** Called for modal-triggering links: "login" or a link's `modalKey`. */
-    onShowModal?: (key: string) => void;
+    /** Called for modal-triggering links: "login" or a link's `modalKey`.
+     *  `appType` is forwarded so the app can render the right modal variant. */
+    onShowModal?: (key: string, appType: AppType) => void;
+    /** Routes the user can't access while logged out (e.g. ["/my-groups"]).
+     *  On these, the login modal auto-opens — ported from the meetup Sidebar. */
+    routesUserCantAccess?: string[];
 };
 
 export declare function SidebarRow({ title, iconSrc, Icon, IconImage, active, isShow, onClick, }: SidebarRowProps): JSX_2.Element;
@@ -528,6 +568,12 @@ export declare type UserInfo = {
     personalInfo?: PersonalInfo;
     personalInterests?: PersonalInterests;
 };
+
+export declare interface UserIpInfo {
+    locationDisplayName: string;
+    latitude: number;
+    longitude: number;
+}
 
 export declare interface UserItemToDisplay {
     id: string;

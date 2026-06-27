@@ -165,3 +165,11 @@ export interface ServerError {
   message: string;
   details: string;
 }
+
+
+
+export interface UserIpInfo {
+  locationDisplayName: string;
+  latitude: number;
+  longitude: number;
+}

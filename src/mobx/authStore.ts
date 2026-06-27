@@ -1,7 +1,5 @@
-// authStore — the ONLY store copied over from the reference repo (see CLAUDE.md).
-// Ported from src/stores/authStore.ts with core-web-local imports.
 import { makeAutoObservable, runInAction } from "mobx";
-import type { User, UserRegisterForm, UserRegisterFormDto } from "../typings";
+import type { User, UserIpInfo, UserRegisterForm, UserRegisterFormDto } from "../typings";
 import Auth from "../auth";
 import agent from "../api/agent";
 import { DEFAULT_USER_REGISTRATION_FORM, inTestMode } from "../constants";
@@ -12,6 +10,7 @@ export default class AuthStore {
   processingUserCheck: boolean = false;
   currentSessionUser: User | undefined = undefined;
   auth: Auth | undefined = undefined;
+  userIpInfo: UserIpInfo | undefined = undefined;
 
   loadingRegistration: boolean = false;
   loadingUpsert: boolean = false;
@@ -42,6 +41,32 @@ export default class AuthStore {
       return this.currentSessionUser?.id;
     }
   };
+
+
+  setUserIpInfo = (data: UserIpInfo | undefined) => {
+    this.userIpInfo = data;
+  }
+
+  loadIpInfo = async () => {
+    if(!this.auth)
+      this.auth = new Auth();
+
+    if(!this.auth?.getUserIpInfo()) {
+      const ipData = await agent.locationApiClient.getIpAddress();
+      const newUserIpInfo = {
+        locationDisplayName: `${ipData.city}, ${ipData.country_name}`,
+        latitude: ipData.latitude,
+        longitude: ipData.longitude
+      };
+
+      this.auth?.setUserIpInfo(newUserIpInfo);
+      this.setUserIpInfo(newUserIpInfo);
+      console.log("user IP DATA:", this.userIpInfo);
+    } else {
+
+      this.setUserIpInfo(this.auth.getUserIpInfo()!);
+    }
+  }
 
   setProcessingUserCheck = (val: boolean) => {
     this.processingUserCheck = val;

@@ -19,6 +19,8 @@ export interface AlSaqrConfig {
   hfToken?: string;
 
   testMode?: boolean;
+  locationApiUrl?: string;
+  locationReverseApiUrl?: string;
 }
 
 let current: AlSaqrConfig | undefined;

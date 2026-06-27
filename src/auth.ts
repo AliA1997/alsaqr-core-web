@@ -1,6 +1,6 @@
 // Cookie-backed auth helper. Ported from the reference repo's src/utils/auth.ts.
 import Cookies from "universal-cookie";
-import type { User } from "./typings";
+import type { User, UserIpInfo } from "./typings";
 import { testAuthUser } from "./testing/testData";
 
 export default class Auth {
@@ -56,5 +56,19 @@ export default class Auth {
 
   clearToken(key: string = "jwt") {
     this.cookie.remove(key);
+  }
+
+  setUserIpInfo(value: UserIpInfo, key: string="userIpInfo") {
+    const expires = new Date();
+    expires.setDate(expires.getDate() + 7);
+    this.cookie.set(key, JSON.stringify(value), {
+        path: '/',
+        expires: expires,
+        secure: true,
+        sameSite: 'strict',
+    });
+  }
+  getUserIpInfo(key: string='userIpInfo'): UserIpInfo | null {
+    return this.cookie.get(key) ? JSON.parse(JSON.stringify(this.cookie.get(key))) : null;
   }
 }

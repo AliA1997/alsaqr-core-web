@@ -6,6 +6,7 @@ import { PaginatedResult } from "../models/common";
 import { getSupabase } from "../supabase";
 import { getConfig } from "../config";
 import { userApiClient } from "./userApiClient";
+import { locationApiClient } from "./locationApiClient";
 
 export const axiosResponseBody = (res: AxiosResponse) => res.data;
 
@@ -74,6 +75,7 @@ axios.interceptors.response.use(
 
 const agent = {
   userApiClient,
+  locationApiClient
 };
 
 export default agent;

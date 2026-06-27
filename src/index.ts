@@ -11,3 +11,4 @@ export * from "./supabase";
 export * from "./mobx";
 export * from "./models/common";
 export { default as Auth } from "./auth";
+export { default as commonAgent } from "./api/agent";
