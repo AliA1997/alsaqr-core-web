@@ -1,6 +1,6 @@
 // Common constants shared across all AlSaqr projects.
 // Auth-related subset ported from the reference repo's src/utils/constants.
-import { UserRegisterForm } from "typings";
+import type { UserRegisterForm } from "../typings";
 import { getConfigSafe } from "../config";
 
 export const DEFAULT_USER_REGISTRATION_FORM: UserRegisterForm = {

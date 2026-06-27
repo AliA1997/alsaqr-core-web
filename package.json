@@ -1,6 +1,6 @@
 {
   "name": "alsaqr-web-core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Reusable CDN of common AlSaqr components, layout, stores, and clients (Gradio, Supabase, MobX) shared across AlSaqr social media, meetup, and zook.",
   "type": "module",
   "license": "UNLICENSED",
@@ -16,7 +16,7 @@
       "import": "./dist/alsaqr-web-core.js",
       "require": "./dist/alsaqr-web-core.umd.cjs"
     },
-    "./style.css": "./dist/alsaqr-web-core.css"
+    "./style.css": "./dist/style.css"
   },
   "files": ["dist"],
   "scripts": {

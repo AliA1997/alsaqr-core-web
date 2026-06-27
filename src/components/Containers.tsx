@@ -1,7 +1,7 @@
 // Containers. Ported from the reference repo's src/common/Containers.tsx.
 import React from "react";
 import { motion } from "framer-motion";
-import { User } from "typings";
+import type { User } from "../typings";
 import { OptimizedImage } from "./Image";
 
 export const ContentContainerWithRef = ({

@@ -2,12 +2,12 @@
 // src/utils/api/userApiClient.ts.
 import axios from "axios";
 import { axiosRequests, axiosResponseBody } from "./agent";
-import {
+import type {
   UserRegisterFormDto,
   FollowUserFormDto,
   UnFollowUserFormDto,
   UpdateUserFormDto,
-} from "typings";
+} from "../typings";
 
 export const userApiClient = {
   sessionSignin: (oauthData: any) =>

@@ -12,8 +12,6 @@ import { ReactElement } from 'react';
 import { ReactNode } from 'react';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { SVGProps } from 'react';
-import { User } from 'typings';
-import { UserRegisterForm } from 'typings';
 
 declare const Accordion: ({ items, defaultExpanded, allowMultiple, className, }: Props) => default_3.JSX.Element;
 export { Accordion }
@@ -144,6 +142,10 @@ declare type FileUploadInputProps = {
     label?: string;
     handleFileChange: (event: default_3.ChangeEvent<HTMLInputElement>, helpers: FieldHelperProps<any>) => void;
 } & FieldHookConfig<File | null>;
+
+export declare interface FollowUserFormDto {
+    userToFollowId: string;
+}
 
 /** Throws if used before configureAlSaqr — for clients that truly need config. */
 export declare function getConfig(): AlSaqrConfig;
@@ -288,6 +290,20 @@ export declare class PagingParams {
     constructor(page?: number, limit?: number);
 }
 
+export declare interface PersonalInfo {
+    dateOfBirth?: string;
+    maritalStatus?: "single" | "married" | "divorced" | "widowed";
+}
+
+export declare interface PersonalInterests {
+    hobbies?: string[];
+    preferredMadhab?: "Hanafi" | "Shafi'i" | "Maliki" | "Hanbali" | "Salafi";
+    frequentMasjid?: string;
+    favoriteQuranReciters?: string[];
+    favoriteIslamicScholars?: string[];
+    islamicStudyTopics?: string[];
+}
+
 export declare function ProfileImagePreview({ username, bgThumbnail, avatar, }: ProfileImagePreviewProps): default_3.JSX.Element;
 
 declare type ProfileImagePreviewProps = {
@@ -295,6 +311,26 @@ declare type ProfileImagePreviewProps = {
     username: string;
     bgThumbnail: string;
 };
+
+export declare interface ProfileUser {
+    userId: string;
+    username: string;
+    firstName: string;
+    lastName?: string;
+    avatar?: string;
+    bgThumbnail?: string;
+    bannerImage?: string;
+    bio?: string;
+    dateOfBirth?: Date;
+    createdAt: Date;
+    updatedAt?: Date;
+    bookmarks: string[];
+    bookmarkCount: number;
+    following?: object[];
+    followingCount: number;
+    followers?: object[];
+    followerCount: number;
+}
 
 declare interface Props {
     items: AccordionItem[];
@@ -329,6 +365,12 @@ declare type SelectProps = FieldHookConfig<string> & {
     placeholder?: string;
     options: Option_2[];
 };
+
+export declare interface ServerError {
+    statusCode: number;
+    message: string;
+    details: string;
+}
 
 export declare const Sidebar: (({ appType, onShowModal }: SidebarProps) => JSX_2.Element) & {
     displayName: string;
@@ -399,6 +441,117 @@ declare type ThemeProviderState = {
     theme: Theme;
     setTheme: (theme: Theme) => void;
 };
+
+export declare interface UnFollowUserFormDto {
+    userToUnFollowId: string;
+}
+
+export declare interface UpdateUserForm {
+    id: string;
+    firstName: string;
+    lastName: string;
+    avatar: string;
+    bgThumbnail: string;
+    dateOfBirth?: Date;
+    username: string;
+    bio: string;
+    religion: string;
+    maritalStatus?: "single" | "married" | "divorced" | "widowed";
+    hobbies?: string[];
+    countryOfOrigin?: string;
+    preferredMadhab?: "Hanafi" | "Shafi'i" | "Maliki" | "Hanbali" | "Salafi" | "Prefer Not To Disclose";
+    frequentMasjid?: string;
+    favoriteQuranReciters?: string[];
+    favoriteIslamicScholars?: string[];
+    islamicStudyTopics?: string[];
+}
+
+export declare interface UpdateUserFormDto extends UpdateUserForm {
+}
+
+export declare interface User extends UserInfo {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    firstName?: string;
+    lastName?: string;
+    dateOfBirth?: Date;
+    geoId?: string;
+    maritalStatus?: "single" | "married" | "divorced" | "widowed";
+    hobbies?: string[];
+    religion?: string;
+    preferredMadhab?: string;
+    frequentMasjid?: string;
+    favoriteQuranReciters?: string[];
+    favoriteIslamicScholars?: string[];
+    islamicStudyTopics?: string[];
+    following: {
+        avatar?: string;
+        bio?: string;
+        username?: string;
+        userId?: string;
+    }[];
+    followingCount: number;
+    followers: {
+        avatar?: string;
+        bio?: string;
+        username?: string;
+        userId?: string;
+    }[];
+    followerCount: number;
+    bookmarks: string[];
+    reposts: string[];
+    likedPosts: string[];
+    isCompleted: boolean;
+    verified: boolean;
+}
+
+export declare type UserInfo = {
+    username: string;
+    bio?: string;
+    countryOfOrigin: string;
+    avatar: string;
+    bgThumbnail: string;
+    email: string;
+    phone?: string;
+    personalInfo?: PersonalInfo;
+    personalInterests?: PersonalInterests;
+};
+
+export declare interface UserItemToDisplay {
+    id: string;
+    username: string;
+    avatar?: string;
+    bgThumbnail?: string;
+    bio?: string;
+    firstName?: string;
+    lastName?: string;
+    bannerImage?: string;
+    countryOfOrigin?: string;
+    preferredMadhab?: string;
+    hobbies: string[];
+    favoriteQuranReciters: string[];
+    favoriteIslamicScholars: string[];
+    islamicStudyTopics: string[];
+    followingCount: number;
+    followerCount: number;
+    totalItems: number;
+}
+
+export declare interface UserRegisterForm extends Omit<UserInfo, "countryOfOrigin"> {
+    firstName: string;
+    lastName: string;
+    dateOfBirth?: Date;
+    maritalStatus?: "single" | "married" | "divorced" | "widowed";
+    hobbies?: string[];
+    religion?: string;
+    countryOfOrigin?: string;
+    followingUsers: UserItemToDisplay[];
+}
+
+export declare interface UserRegisterFormDto extends Omit<UserRegisterForm, "followingUsers"> {
+    followingUsers: string[];
+}
 
 export declare const useStore: () => RootStore;
 

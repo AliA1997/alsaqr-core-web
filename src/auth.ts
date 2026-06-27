@@ -1,6 +1,6 @@
 // Cookie-backed auth helper. Ported from the reference repo's src/utils/auth.ts.
 import Cookies from "universal-cookie";
-import { User } from "typings";
+import type { User } from "./typings";
 import { testAuthUser } from "./testing/testData";
 
 export default class Auth {

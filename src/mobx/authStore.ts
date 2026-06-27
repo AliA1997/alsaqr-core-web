@@ -1,7 +1,7 @@
 // authStore — the ONLY store copied over from the reference repo (see CLAUDE.md).
 // Ported from src/stores/authStore.ts with core-web-local imports.
 import { makeAutoObservable, runInAction } from "mobx";
-import { User, UserRegisterForm, UserRegisterFormDto } from "typings";
+import type { User, UserRegisterForm, UserRegisterFormDto } from "../typings";
 import Auth from "../auth";
 import agent from "../api/agent";
 import { DEFAULT_USER_REGISTRATION_FORM, inTestMode } from "../constants";
