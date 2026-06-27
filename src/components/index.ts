@@ -23,3 +23,7 @@ export * from "./Containers";
 
 // Batch 3 — prop-driven Modal (spec 0003).
 export * from "./Modal";
+export { Collapsible, default as CollapsibleDefault } from "./Collapsible";
+
+// Auth modals (LoginModal) — ported from the meetup repo's src/common/AuthModals.
+export * from "./AuthModals";

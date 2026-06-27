@@ -2,7 +2,7 @@
 // the link set is chosen by `appType` (default | meetup | zook). User-related
 // links (the profile block) are intentionally excluded. Modal triggers are
 // delegated to the app via `onShowModal` (constraint: only authStore in core-web).
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useLayoutEffect, useState } from "react";
 import {
   DotsCircleHorizontalIcon,
   LoginIcon,
@@ -10,29 +10,56 @@ import {
   CogIcon,
 } from "@heroicons/react/outline";
 import { observer } from "mobx-react-lite";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useStore } from "../mobx";
 import { getSupabase } from "../supabase";
 import { getConfigSafe } from "../config";
 import { SIDEBAR_LINKS, type AppType, type SidebarLink } from "../constants";
+import Collapsible from "../components/Collapsible";
 import SidebarRow from "./SidebarRow";
 import DarkSwitch from "./DarkSwitch";
 
 type SidebarProps = {
   appType?: AppType;
-  /** Called for modal-triggering links: "login" or a link's `modalKey`. */
-  onShowModal?: (key: string) => void;
+  /** Called for modal-triggering links: "login" or a link's `modalKey`.
+   *  `appType` is forwarded so the app can render the right modal variant. */
+  onShowModal?: (key: string, appType: AppType) => void;
+  /** Routes the user can't access while logged out (e.g. ["/my-groups"]).
+   *  On these, the login modal auto-opens — ported from the meetup Sidebar. */
+  routesUserCantAccess?: string[];
 };
 
-const SideBar = ({ appType = "default", onShowModal }: SidebarProps) => {
+const SideBar = ({
+  appType = "default",
+  onShowModal,
+  routesUserCantAccess = [],
+}: SidebarProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { authStore } = useStore();
-  const { currentSessionUser, resetAuthState } = authStore;
+  const { auth, currentSessionUser, resetAuthState } = authStore;
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const [mounted, setMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  // Meetup-case behavior: when on a restricted route and logged out, prompt
+  // login; once the session user exists (registration complete), the app closes.
+  useLayoutEffect(() => {
+    const notLoggedIn = mounted && !auth?.isLoggedIn();
+    const onRestrictedRoute = routesUserCantAccess.some((r) =>
+      location.pathname.includes(r)
+    );
+    if (notLoggedIn && onRestrictedRoute) onShowModal?.("login", appType);
+  }, [currentSessionUser?.id, mounted, location.pathname]);
 
   const onLinkClick = (link: SidebarLink) => {
-    if (link.modalKey) return onShowModal?.(link.modalKey);
-    if (link.requiresAuth && !currentSessionUser) return onShowModal?.("login");
+    if (link.modalKey) return onShowModal?.(link.modalKey, appType);
+    if (link.requiresAuth && !currentSessionUser)
+      return onShowModal?.("login", appType);
     if (link.externalUrlKey) {
       const url = getConfigSafe()?.[link.externalUrlKey];
       if (url) window.location.href = url;
@@ -51,8 +78,25 @@ const SideBar = ({ appType = "default", onShowModal }: SidebarProps) => {
     else window.location.href = `${getConfigSafe()?.baseUrl ?? ""}settings`;
   };
 
-  const links = SIDEBAR_LINKS[appType];
-  let lastGroup: string | undefined;
+  // Fold consecutive grouped links into sections so each group renders inside a
+  // single Collapsible (e.g. "Location"); ungrouped links render on their own.
+  const sections = SIDEBAR_LINKS[appType].reduce<
+    Array<{ group?: string; links: SidebarLink[] }>
+  >((acc, link) => {
+    const last = acc[acc.length - 1];
+    if (link.group && last?.group === link.group) last.links.push(link);
+    else acc.push({ group: link.group, links: [link] });
+    return acc;
+  }, []);
+
+  const renderRow = (link: SidebarLink) => (
+    <SidebarRow
+      key={link.title}
+      title={link.title}
+      iconSrc={link.iconSrc}
+      onClick={() => onLinkClick(link)}
+    />
+  );
 
   return (
     <div
@@ -69,25 +113,17 @@ const SideBar = ({ appType = "default", onShowModal }: SidebarProps) => {
         />
       </div>
 
-      {links.map((link) => {
-        const header =
-          link.group && link.group !== lastGroup ? (
-            <p className="px-4 pt-3 pb-1 text-xs font-bold uppercase opacity-60 dark:text-gray-50">
-              {link.group}
-            </p>
-          ) : null;
-        lastGroup = link.group;
-        return (
-          <Fragment key={link.title}>
-            {header}
-            <SidebarRow
-              title={link.title}
-              iconSrc={link.iconSrc}
-              onClick={() => onLinkClick(link)}
-            />
+      {sections.map((section) =>
+        section.group ? (
+          <Collapsible key={section.group} title={section.group} defaultOpen>
+            {section.links.map(renderRow)}
+          </Collapsible>
+        ) : (
+          <Fragment key={section.links[0].title}>
+            {section.links.map(renderRow)}
           </Fragment>
-        );
-      })}
+        )
+      )}
 
       <div className="relative more-container">
         <SidebarRow
@@ -113,7 +149,7 @@ const SideBar = ({ appType = "default", onShowModal }: SidebarProps) => {
                   Icon={LoginIcon}
                   title="Sign In"
                   isShow={true}
-                  onClick={() => onShowModal?.("login")}
+                  onClick={() => onShowModal?.("login", appType)}
                 />
               )}
             </div>

@@ -1,6 +1,6 @@
 {
   "name": "alsaqr-web-core",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Reusable CDN of common AlSaqr components, layout, stores, and clients (Gradio, Supabase, MobX) shared across AlSaqr social media, meetup, and zook.",
   "type": "module",
   "license": "UNLICENSED",

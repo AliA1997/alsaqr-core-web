@@ -172,6 +172,15 @@ declare interface LoadingSpinnerProps {
     color: string;
 }
 
+export declare const LoginModal: (({ onClose, routesUserCantAccess }: LoginModalProps) => JSX_2.Element) & {
+    displayName: string;
+};
+
+export declare interface LoginModalProps {
+    onClose: () => void;
+    routesUserCantAccess?: string[];
+}
+
 export declare function MessagesImagePreview({ user, index }: MessagesImagePreviewProps): default_3.JSX.Element;
 
 declare type MessagesImagePreviewProps = {
@@ -468,6 +477,8 @@ export declare interface UpdateUserForm {
 
 export declare interface UpdateUserFormDto extends UpdateUserForm {
 }
+
+export declare function useCheckSession(setState: (user: User | undefined) => void, sessionUser: User | undefined | null): {};
 
 export declare interface User extends UserInfo {
     id: string;
