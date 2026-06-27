@@ -1,0 +1,11 @@
+node_modules
+*.log
+*.tgz
+
+# Defined and deployed, but never published to GitHub (see CLAUDE.md).
+.env
+.env.*
+!.env.example
+
+# NOTE: dist/ is intentionally NOT ignored — jsDelivr serves the built,
+# minified files from tagged GitHub releases/commits.

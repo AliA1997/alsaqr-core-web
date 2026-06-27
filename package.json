@@ -1,0 +1,55 @@
+{
+  "name": "alsaqr-web-core",
+  "version": "0.0.1",
+  "description": "Reusable CDN of common AlSaqr components, layout, stores, and clients (Gradio, Supabase, MobX) shared across AlSaqr social media, meetup, and zook.",
+  "type": "module",
+  "license": "UNLICENSED",
+  "sideEffects": false,
+  "module": "./dist/alsaqr-web-core.js",
+  "main": "./dist/alsaqr-web-core.umd.cjs",
+  "jsdelivr": "./dist/alsaqr-web-core.umd.cjs",
+  "unpkg": "./dist/alsaqr-web-core.umd.cjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/alsaqr-web-core.js",
+      "require": "./dist/alsaqr-web-core.umd.cjs"
+    },
+    "./style.css": "./dist/alsaqr-web-core.css"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "react-router-dom": "^6.0.0 || ^7.0.0"
+  },
+  "dependencies": {
+    "@gradio/client": "^1.0.0",
+    "@heroicons/react": "^1.0.6",
+    "@supabase/supabase-js": "^2.0.0",
+    "axios": "^1.6.0",
+    "formik": "^2.4.0",
+    "framer-motion": "^11.0.0",
+    "mobx": "^6.0.0",
+    "mobx-react-lite": "^4.0.0",
+    "react-datepicker": "^6.0.0",
+    "universal-cookie": "^7.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "react-router-dom": "^6.0.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.4.0",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.9.0"
+  }
+}
