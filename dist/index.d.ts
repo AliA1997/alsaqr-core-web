@@ -103,18 +103,42 @@ declare interface CollapsibleProps {
 export declare const commonAgent: {
     userApiClient: {
         sessionSignin: (oauthData: any) => Promise<any>;
-        sessionCheck: (email: string) => Promise<any>;
+        sessionCheck: (email: string, web3_address?: string) => Promise<any>;
+        web3SessionSignin: (web3Address: string) => Promise<any>;
+        web3SessionCheck: (web3Address: string) => Promise<any>;
         getUserProfile: (username: string) => Promise<any>;
         getUsersToAdd: (params: URLSearchParams) => Promise<any>;
+        getUserProfilePosts: (username: string, params: URLSearchParams) => Promise<any>;
+        getUserProfileMediaPosts: (username: string, params: URLSearchParams) => Promise<any>;
+        getUserProfileCommunities: (username: string, params: URLSearchParams) => Promise<any>;
+        getUserProfileCommunityDiscussions: (username: string, params: URLSearchParams) => Promise<any>;
+        getUserProfileGroups: (username: string, params: URLSearchParams) => Promise<any>;
+        getUserProfileEvents: (username: string, params: URLSearchParams) => Promise<any>;
+        getUserProfileProducts: (username: string, params: URLSearchParams) => Promise<any>;
         completeRegistration: (userId: string, values: UserRegisterFormDto) => Promise<any>;
         followUser: (values: FollowUserFormDto) => Promise<any>;
         unFollowUser: (values: UnFollowUserFormDto) => Promise<any>;
         updateUser: (values: UpdateUserFormDto) => Promise<any>;
         deleteUser: () => Promise<any>;
     };
+    subscriptionApiClient: {
+        getSubscriptionDailyUse: (params: URLSearchParams | undefined) => Promise<any>;
+    };
+    notificationApiClient: {
+        getNotifications: (userId: string, params: URLSearchParams | undefined, webWorkerAccessToken?: string) => Promise<any>;
+    };
+    messageApiClient: {
+        loadDirectMessages: (params: URLSearchParams) => Promise<any>;
+        sendDirectMessage: (values: MessageFormDto) => Promise<any>;
+        loadDirectMessageThreads: (params: URLSearchParams, webWorkerAccessToken?: string) => Promise<any>;
+    };
     locationApiClient: {
         getIpAddress: () => Promise<any>;
         reverseLocateAddress: (lat: number, long: number) => Promise<any>;
+    };
+    exploreApiClient: {
+        getExplore: (params: URLSearchParams) => Promise<any>;
+        getExploreFromSource: (source: ExploreTabs, params: URLSearchParams) => Promise<any>;
     };
 };
 
@@ -124,6 +148,21 @@ declare type CommonImageProps = {
     classNames?: string;
     onClick?: MouseEventHandler<HTMLImageElement> | undefined;
 };
+
+export declare type CommonRecordBody = {
+    text: string;
+    image?: string;
+};
+
+export declare enum CommonUpsertBoxTypes {
+    Post = "Post",
+    List = "List",
+    Community = "Community",
+    UpdateCommunity = "Update-Community",
+    CommunityDiscussion = "CommunityDiscussion",
+    UpdateCommunityDiscussion = "Update-Community-Discussion",
+    Register = "Register"
+}
 
 export declare function configureAlSaqr(config: AlSaqrConfig): void;
 
@@ -164,6 +203,16 @@ export declare const DarkSwitch: () => JSX_2.Element;
 
 export declare const DEFAULT_USER_REGISTRATION_FORM: UserRegisterForm;
 
+export declare enum ExploreTabs {
+    Popular = "popular",
+    AlJazeeraEnglish = "al-jazeera-english",
+    Argaam = "argaam",
+    BleacherReport = "bleacher-report",
+    CryptoCoinsNews = "crypto-coins-news",
+    HackerNews = "hacker-news",
+    SABQ = "sabq"
+}
+
 export declare const FALLBACK_IMAGE_URL = "https://res.cloudinary.com/aa1997/image/upload/v1720130142/Web3-Client-Projects/Gm.png";
 
 export declare const FALLBACK_NEWS_IMAGE_URL = "/explore-news-placeholder.svg";
@@ -178,6 +227,19 @@ declare type FileUploadInputProps = {
     label?: string;
     handleFileChange: (event: default_3.ChangeEvent<HTMLInputElement>, helpers: FieldHelperProps<any>) => void;
 } & FieldHookConfig<File | null>;
+
+export declare enum FilterKeys {
+    Search = "search",
+    SearchUsers = "search-users",
+    SearchPosts = "search-posts",
+    MyBookmarks = "my-bookmarks",
+    Explore = "explore",
+    Normal = "normal",
+    Lists = "lists",
+    Community = "community",
+    CommunityDiscussion = "community-discussion",
+    Register = "register"
+}
 
 export declare interface FollowUserFormDto {
     userToFollowId: string;
@@ -217,12 +279,50 @@ export declare interface LoginModalProps {
     routesUserCantAccess?: string[];
 }
 
+export declare interface MessageFormDto {
+    senderId: string;
+    senderProfileImg?: string;
+    senderUsername?: string;
+    recipientId?: string;
+    recipientProfileImg?: string;
+    recipientUsername?: string;
+    text: string;
+    image?: string;
+}
+
+export declare interface MessageHistoryToDisplay {
+    id: string;
+    receiverId: string;
+    receiverProfileImage: string;
+    receiverUsername: string;
+    messageCount: any;
+    lastMessageDate: any;
+}
+
+export declare interface MessageRecord extends CommonRecordBody {
+    messageId: string;
+    senderId?: string;
+    senderUsername?: string;
+    senderAvatar?: string;
+    recipientId?: string;
+    recipientAvatar?: string;
+    recipientUsername?: string;
+    messageContent?: string;
+    messageMedia?: string;
+    isRead?: boolean;
+    messageCreatedAt: Date;
+    messageUpdatedAt: Date;
+}
+
 export declare function MessagesImagePreview({ user, index }: MessagesImagePreviewProps): default_3.JSX.Element;
 
 declare type MessagesImagePreviewProps = {
     user: User;
     index: number;
 };
+
+export declare interface MessageToDisplay extends MessageRecord {
+}
 
 export declare const Modal: ({ isOpen, onClose, children, classNames, bodyClassNames, }: ModalProps) => default_3.JSX.Element | null;
 
@@ -276,6 +376,33 @@ declare type MyInputProps = {
 } & FieldHookConfig<string>;
 
 export declare function NoRecordsTitle({ children }: default_3.PropsWithChildren<any>): default_3.JSX.Element;
+
+export declare interface NotificationRecord extends CommonRecordBody {
+    notificationId: string;
+    userId: string;
+    notificationMessage: string;
+    notificationType: string;
+    isRead: boolean;
+    link?: string;
+    relatedUserId?: string;
+    postId?: string;
+    communityId?: string;
+    communityDiscussionId?: string;
+    communityDiscussionMessageId?: string;
+    listId?: string;
+    listItemId?: string;
+    notificationCreatedAt: string;
+    notificationUpdatedAt: string;
+}
+
+export declare enum NotificationTabs {
+    All = "All",
+    Verified = "Verified",
+    Mentions = "Mentions"
+}
+
+export declare interface NotificationToDisplay extends NotificationRecord {
+}
 
 export declare function OptimizedImage({ src, alt, onClick, classNames, loadedHeight, loadedWidth, }: CommonImageProps & {
     loadedHeight?: number;
@@ -396,6 +523,16 @@ declare type RadioCardProps = {
     icon?: default_3.ReactNode;
 } & FieldHookConfig<string>;
 
+export declare enum RelationshipType {
+    Member = "member",
+    Invited = "invited",
+    Moderator = "moderator",
+    Founder = "founder",
+    Requested = "requested",
+    InviteRequestedForCommunityDiscussion = "INVITE_REQUESTED_FOR_DISCUSSION",
+    None = "none"
+}
+
 export declare class RootStore {
     authStore: AuthStore;
     constructor();
@@ -415,6 +552,19 @@ export declare interface ServerError {
     statusCode: number;
     message: string;
     details: string;
+}
+
+export declare interface ServerError {
+    statusCode: number;
+    message: string;
+    details: string;
+}
+
+export declare enum SettingsTabs {
+    PersonalInfo = 0,
+    PersonalizeAccount = 1,
+    DeleteYourAccount = 2,
+    Usage = 3
 }
 
 export declare const Sidebar: (({ appType, onShowModal, routesUserCantAccess, }: SidebarProps) => JSX_2.Element) & {
@@ -453,6 +603,18 @@ declare interface SidebarRowProps {
     active?: boolean;
     isShow?: boolean;
     onClick?: () => void;
+}
+
+export declare enum SidebarTabs {
+    Explore = 0,
+    Notifications = 1,
+    Messages = 2,
+    Bookmarks = 3,
+    Lists = 4,
+    Communities = 5,
+    Zook = 6,
+    Meetup = 7,
+    YumnaAI = 8
 }
 
 export declare const SkeletonLoader: default_3.NamedExoticComponent<SkeletonLoaderProps>;
@@ -505,10 +667,10 @@ export declare interface UpdateUserForm {
     username: string;
     bio: string;
     religion: string;
-    maritalStatus?: "single" | "married" | "divorced" | "widowed";
+    maritalStatus?: 'single' | 'married' | 'divorced' | 'widowed';
     hobbies?: string[];
     countryOfOrigin?: string;
-    preferredMadhab?: "Hanafi" | "Shafi'i" | "Maliki" | "Hanbali" | "Salafi" | "Prefer Not To Disclose";
+    preferredMadhab?: 'Hanafi' | "Shafi'i" | 'Maliki' | 'Hanbali' | "Salafi" | "Prefer Not To Disclose";
     frequentMasjid?: string;
     favoriteQuranReciters?: string[];
     favoriteIslamicScholars?: string[];

@@ -1,0 +1,23 @@
+/*
+ * Tailwind entry for the alsaqr-web-core CDN bundle.
+ *
+ * IMPORTANT: we deliberately do NOT `@import "tailwindcss"`.
+ * That pulls in Preflight, a global reset that rewrites `*`, `body`, headings,
+ * lists, etc. In a library shipped over a CDN that reset lands on the consuming
+ * app and wrecks its existing styles. We ship theme + utilities only, so the
+ * host app keeps full control of its own base layer.
+ */
+@layer theme, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/*
+ * Tailwind v4 scans the importer's source graph. This library is built in
+ * isolation, so point the scanner at our own components explicitly — otherwise
+ * every utility class we use gets tree-shaken and dist/style.css ships empty.
+ */
+@source "./components/**/*.{ts,tsx}";
+@source "./layout/**/*.{ts,tsx}";
+@source "./hooks/**/*.{ts,tsx}";
+@source "./constants/**/*.{ts,tsx}";

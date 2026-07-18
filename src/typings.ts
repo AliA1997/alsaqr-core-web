@@ -1,3 +1,74 @@
+export type CommonRecordBody = {
+  text: string;
+  image?: string;
+};
+
+export interface NotificationRecord extends CommonRecordBody {
+  notificationId: string;
+  userId: string;
+  notificationMessage: string;
+  notificationType: string;
+  isRead: boolean;
+  link?: string;
+  relatedUserId?: string;
+  postId?: string;
+  communityId?: string;
+  communityDiscussionId?: string;
+  communityDiscussionMessageId?: string;
+  listId?: string;
+  listItemId?: string;
+  notificationCreatedAt: string;
+  notificationUpdatedAt: string;
+}
+
+
+export interface NotificationToDisplay extends NotificationRecord {}
+
+export interface ServerError {
+  statusCode: number;
+  message: string;
+  details: string;
+}
+
+
+
+export interface MessageFormDto {
+  senderId: string;
+  senderProfileImg?: string;
+  senderUsername?: string;
+  recipientId?: string;
+  recipientProfileImg?: string;
+  recipientUsername?: string;
+  text: string;
+  image?: string;
+}
+
+export interface MessageRecord extends CommonRecordBody {
+  messageId: string;
+  senderId?: string;
+  senderUsername?: string;
+  senderAvatar?: string;
+  recipientId?: string;
+  recipientAvatar?: string;
+  recipientUsername?: string;
+  messageContent?: string;
+  messageMedia?: string;
+  isRead?: boolean;
+
+  messageCreatedAt: Date;
+  messageUpdatedAt: Date;
+}
+
+export interface MessageToDisplay extends MessageRecord {}
+
+export interface MessageHistoryToDisplay {
+  id: string;
+  receiverId: string;
+  receiverProfileImage: string
+  receiverUsername: string;
+  messageCount: any;
+  lastMessageDate: any;
+}
 // Shared auth-related TypeScript models used across all 3 AlSaqr projects.
 // Ported from the reference repo's typings.d.ts and src/models/users.ts
 // (auth-related only — see CLAUDE.md). A real module (not an ambient
@@ -122,43 +193,6 @@ export interface PersonalInterests {
   favoriteIslamicScholars?: string[];
   islamicStudyTopics?: string[];
 }
-
-// Auth-related user form DTOs (ported from src/models/users.ts).
-export interface FollowUserFormDto {
-  userToFollowId: string;
-}
-
-export interface UnFollowUserFormDto {
-  userToUnFollowId: string;
-}
-
-export interface UpdateUserForm {
-  id: string;
-  firstName: string;
-  lastName: string;
-  avatar: string;
-  bgThumbnail: string;
-  dateOfBirth?: Date;
-  username: string;
-  bio: string;
-  religion: string;
-  maritalStatus?: "single" | "married" | "divorced" | "widowed";
-  hobbies?: string[];
-  countryOfOrigin?: string;
-  preferredMadhab?:
-    | "Hanafi"
-    | "Shafi'i"
-    | "Maliki"
-    | "Hanbali"
-    | "Salafi"
-    | "Prefer Not To Disclose";
-  frequentMasjid?: string;
-  favoriteQuranReciters?: string[];
-  favoriteIslamicScholars?: string[];
-  islamicStudyTopics?: string[];
-}
-
-export interface UpdateUserFormDto extends UpdateUserForm {}
 
 export interface ServerError {
   statusCode: number;

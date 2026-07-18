@@ -7,6 +7,10 @@ import { getSupabase } from "../supabase";
 import { getConfig } from "../config";
 import { userApiClient } from "./userApiClient";
 import { locationApiClient } from "./locationApiClient";
+import { notificationApiClient } from "./notificationApiClient";
+import { messageApiClient } from "./messageApiClient";
+import { subscriptionApiClient } from "./subscriptionApiClient";
+import { exploreApiClient } from "./exploreApiClient";
 
 export const axiosResponseBody = (res: AxiosResponse) => res.data;
 
@@ -75,7 +79,11 @@ axios.interceptors.response.use(
 
 const agent = {
   userApiClient,
-  locationApiClient
+  subscriptionApiClient,
+  notificationApiClient,
+  messageApiClient,
+  locationApiClient,
+  exploreApiClient
 };
 
 export default agent;

@@ -35,33 +35,17 @@ export default defineConfig({
     minify: "esbuild",
     sourcemap: true,
     cssCodeSplit: false,
+    // ESM only. A UMD build is pointless here: every heavy dep below is
+    // externalized, so a <script> tag consumer would have to hand-load 12
+    // globals (React, mobx, formik, framer-motion, ...) before ours evaluates.
+    // Consumers import the ESM entry — via a bundler or jsDelivr's `/+esm`.
     lib: {
       entry: resolve(__dirname, "src/index.ts"),
-      name: "AlSaqrWebCore",
-      formats: ["es", "umd"],
-      fileName: (format) =>
-        format === "es" ? "alsaqr-web-core.js" : "alsaqr-web-core.umd.cjs",
+      formats: ["es"],
+      fileName: () => "alsaqr-web-core.js",
     },
     rollupOptions: {
       external,
-      output: {
-        // Keep tree-shaking friendly chunking; globals for UMD <script> usage.
-        globals: {
-          react: "React",
-          "react-dom": "ReactDOM",
-          "react/jsx-runtime": "jsxRuntime",
-          mobx: "mobx",
-          "mobx-react-lite": "mobxReactLite",
-          "@gradio/client": "GradioClient",
-          "@supabase/supabase-js": "supabase",
-          axios: "axios",
-          "universal-cookie": "Cookies",
-          formik: "Formik",
-          "framer-motion": "FramerMotion",
-          "react-datepicker": "DatePicker",
-          "react-router-dom": "ReactRouterDOM",
-        },
-      },
     },
   },
 });
