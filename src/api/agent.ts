@@ -11,6 +11,7 @@ import { notificationApiClient } from "./notificationApiClient";
 import { messageApiClient } from "./messageApiClient";
 import { subscriptionApiClient } from "./subscriptionApiClient";
 import { exploreApiClient } from "./exploreApiClient";
+import { productApiClient } from "./productApiClient";
 
 export const axiosResponseBody = (res: AxiosResponse) => res.data;
 
@@ -80,6 +81,7 @@ axios.interceptors.response.use(
 const agent = {
   userApiClient,
   subscriptionApiClient,
+  productApiClient,
   notificationApiClient,
   messageApiClient,
   locationApiClient,

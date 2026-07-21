@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>alsaqr-web-core — no-build CDN example</title>
+
+<!--
+  REQUIRED. Without this the components render with no styles.
+  Local dist while testing; swap to the pinned CDN tag for production:
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AliA1997/alsaqr-core-web@v0.0.5/dist/style.css">
+-->
+<link rel="stylesheet" href="../dist/style.css" />
+
+<!--
+  The importmap must cover EVERY bare specifier the bundle imports (13 of them),
+  plus "react-dom/client" which this page itself needs for createRoot.
+
+  ?external=react,... is not optional. Without it esm.sh ships each package its
+  own copy of React, and two React instances in one page produce
+  "Invalid hook call" / dead context — i.e. a blank screen.
+-->
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+    "react-dom": "https://esm.sh/react-dom@18.3.1?external=react",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client?external=react",
+    "react-router-dom": "https://esm.sh/react-router-dom@6?external=react,react-dom",
+    "mobx": "https://esm.sh/mobx@6",
+    "mobx-react-lite": "https://esm.sh/mobx-react-lite@4?external=react,mobx",
+    "axios": "https://esm.sh/axios@1",
+    "formik": "https://esm.sh/formik@2?external=react",
+    "framer-motion": "https://esm.sh/framer-motion@11?external=react,react-dom",
+    "react-datepicker": "https://esm.sh/react-datepicker@6?external=react,react-dom",
+    "universal-cookie": "https://esm.sh/universal-cookie@7",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2",
+    "@gradio/client": "https://esm.sh/@gradio/client@1"
+  }
+}
+</script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="module">
+// No build step means no JSX transform, so we call createElement directly.
+// (You can add Babel Standalone to write JSX, but it compiles in-browser on
+// every load — fine for a prototype, too slow for production.)
+import { createElement as h } from "react";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+
+// Local dist while testing. For production swap to the pinned tag:
+// from "https://cdn.jsdelivr.net/gh/AliA1997/alsaqr-core-web@v0.0.5/dist/alsaqr-web-core.js"
+import {
+  configureAlSaqr,
+  ThemeProvider,
+  PageContainer,
+  PageTitle,
+  DarkSwitch,
+  ButtonLoader,
+  FilterKeys,
+  PagingParams,
+} from "../dist/alsaqr-web-core.js";
+
+// REQUIRED before rendering anything store- or client-backed.
+// getConfig() throws if this hasn't run.
+configureAlSaqr({
+  supabaseUrl: "https://YOUR-PROJECT.supabase.co",
+  supabaseAnonKey: "YOUR_ANON_KEY", // public by design, guarded by RLS
+  apiBaseUrl: "https://YOUR-API.example.com",
+  // hfToken: never put this in a page — proxy NSFW checks through your backend
+});
+
+function App() {
+  // Proves the enums/classes survive as real runtime values, which was the
+  // exact thing broken by the .d.ts bug.
+  const paging = new PagingParams(2, 50);
+
+  return h(
+    PageContainer,
+    null,
+    h(PageTitle, null, "alsaqr-web-core loaded"),
+    h("p", null, `FilterKeys.Explore = ${FilterKeys.Explore}`),
+    h("p", null, `PagingParams = page ${paging.currentPage} / ${paging.itemsPerPage} per page`),
+    h(DarkSwitch, null),
+    h(ButtonLoader, null)
+  );
+}
+
+createRoot(document.getElementById("root")).render(
+  // BrowserRouter is REQUIRED: Sidebar, AuthModals and useCheckSession all
+  // call useLocation/useNavigate and will throw without a Router above them.
+  h(BrowserRouter, null,
+    h(ThemeProvider, { defaultTheme: "system" },
+      h(App, null)))
+);
+</script>
+</body>
+</html>

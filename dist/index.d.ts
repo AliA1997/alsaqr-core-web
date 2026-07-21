@@ -124,6 +124,19 @@ export declare const commonAgent: {
     subscriptionApiClient: {
         getSubscriptionDailyUse: (params: URLSearchParams | undefined) => Promise<any>;
     };
+    productApiClient: {
+        getCategories: () => Promise<any>;
+        getCategory: (categoryId: number) => Promise<any>;
+        addProduct: (values: CreateProductForm) => Promise<any>;
+        updateProduct: (values: UpdateProductForm, productId: number) => Promise<any>;
+        deleteProduct: (productId: number) => Promise<any>;
+        getSellingProducts: (params: URLSearchParams | undefined) => Promise<any>;
+        getBuyingProducts: (params: URLSearchParams | undefined) => Promise<any>;
+        getNearbyProducts: (params: URLSearchParams | undefined) => Promise<any>;
+        getNearbyProductsOnCategory: (params: URLSearchParams | undefined, categoryId: number) => Promise<any>;
+        getProduct: (params: URLSearchParams, productId: number) => Promise<any>;
+        getSimilarProducts: (params: URLSearchParams, productId: number) => Promise<any>;
+    };
     notificationApiClient: {
         getNotifications: (userId: string, params: URLSearchParams | undefined, webWorkerAccessToken?: string) => Promise<any>;
     };
@@ -182,6 +195,21 @@ declare interface ConfirmModalProps {
 export declare function ContentContainer({ children, ...otherProps }: default_3.PropsWithChildren<any>): default_3.JSX.Element;
 
 export declare const ContentContainerWithRef: ({ innerRef, children, classNames, testId, ...otherProps }: default_3.PropsWithChildren<any>) => default_3.JSX.Element;
+
+declare interface CreateProductForm {
+    title?: string | undefined;
+    description?: string | undefined;
+    price?: number | undefined;
+    attributes?: {
+        [key: string]: any;
+    } | undefined;
+    productCategoryId?: string | undefined;
+    images?: string[] | undefined;
+    latitude?: number | undefined;
+    longitude?: number | undefined;
+    country?: string | undefined;
+    tags?: string[] | undefined;
+}
 
 export declare const CustomPageLoader: ({ title }: CustomPageLoaderProps) => default_3.JSX.Element;
 
@@ -469,11 +497,6 @@ export declare interface PersonalInfo {
 
 export declare interface PersonalInterests {
     hobbies?: string[];
-    preferredMadhab?: "Hanafi" | "Shafi'i" | "Maliki" | "Hanbali" | "Salafi";
-    frequentMasjid?: string;
-    favoriteQuranReciters?: string[];
-    favoriteIslamicScholars?: string[];
-    islamicStudyTopics?: string[];
 }
 
 export declare function ProfileImagePreview({ username, bgThumbnail, avatar, }: ProfileImagePreviewProps): default_3.JSX.Element;
@@ -657,6 +680,21 @@ export declare interface UnFollowUserFormDto {
     userToUnFollowId: string;
 }
 
+declare interface UpdateProductForm {
+    title?: string;
+    description?: string;
+    price?: number;
+    attributes?: {
+        [key: string]: any;
+    };
+    productCategoryId?: string;
+    images?: string[];
+    latitude: number;
+    longitude: number;
+    country?: string;
+    tags?: string[];
+}
+
 export declare interface UpdateUserForm {
     id: string;
     firstName: string;
@@ -670,11 +708,6 @@ export declare interface UpdateUserForm {
     maritalStatus?: 'single' | 'married' | 'divorced' | 'widowed';
     hobbies?: string[];
     countryOfOrigin?: string;
-    preferredMadhab?: 'Hanafi' | "Shafi'i" | 'Maliki' | 'Hanbali' | "Salafi" | "Prefer Not To Disclose";
-    frequentMasjid?: string;
-    favoriteQuranReciters?: string[];
-    favoriteIslamicScholars?: string[];
-    islamicStudyTopics?: string[];
 }
 
 export declare interface UpdateUserFormDto extends UpdateUserForm {
@@ -693,11 +726,6 @@ export declare interface User extends UserInfo {
     maritalStatus?: "single" | "married" | "divorced" | "widowed";
     hobbies?: string[];
     religion?: string;
-    preferredMadhab?: string;
-    frequentMasjid?: string;
-    favoriteQuranReciters?: string[];
-    favoriteIslamicScholars?: string[];
-    islamicStudyTopics?: string[];
     following: {
         avatar?: string;
         bio?: string;
@@ -747,11 +775,7 @@ export declare interface UserItemToDisplay {
     lastName?: string;
     bannerImage?: string;
     countryOfOrigin?: string;
-    preferredMadhab?: string;
     hobbies: string[];
-    favoriteQuranReciters: string[];
-    favoriteIslamicScholars: string[];
-    islamicStudyTopics: string[];
     followingCount: number;
     followerCount: number;
     totalItems: number;
